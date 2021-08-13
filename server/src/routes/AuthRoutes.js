@@ -1,0 +1,61 @@
+const { Router } = require('express')
+const router = Router();
+
+
+
+// router.post('/signup', async(req, res) => {
+//     const { fullname, email, phoneNumber, studentNumber } = req.body;
+
+//     const password = req.body.password;
+//     const password_hashed = await bcryptjs.hash(password, saltRounds);
+
+//     console.log(password_hashed)
+
+
+//     const check = await db.promise().query(`SELECT email FROM users WHERE email = '${email}' `)
+
+//     if(check[0].length > 0) {
+//         return res.send("Existing Email")
+//     }
+
+
+//     try {
+//         await db.promise().query(`INSERT INTO users(fullname, email, password, phoneNumber, studentNumber) VALUES('${fullname}', '${email}', '${password_hashed}', '${phoneNumber}', '${studentNumber}' )`)
+//         res.status(200).send("Register Successfully");
+//     }
+//     catch(err) {
+//         res.status(400)
+//     }
+    
+
+// })
+
+
+
+router.post('/signin', async(req, res) => {
+    const {email, password} = req.body;
+
+    
+   
+    try {
+
+        if(email === 'cvsu@cvsu.edu.ph' && password === 'cvsuPassword') {
+            res.status(201).send("Logged In");
+        }
+
+        else {
+            res.status(400).send("Invalid Email or Password")
+        }
+
+    }
+        catch(err) {
+            return err;
+        }
+
+
+
+})
+
+
+
+module.exports = router;

@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = Router();
-
+const db = require('../db/database')
 
 
 // router.post('/signup', async(req, res) => {
@@ -53,6 +53,16 @@ router.post('/signin', async(req, res) => {
         }
 
 
+
+})
+
+
+
+router.get('/getUser', async(req, res) => {
+    const { user_id } = req.body
+
+    const user = await db.promise().query(` SELECT fullname FROM users WHERE id = '${user_id}' `)
+    res.status(200).send(user[0][0])
 
 })
 

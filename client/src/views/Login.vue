@@ -1,21 +1,21 @@
 <template>
 
-    <b-container fluid id="login">
+    <div id="login">
         <b-row class="vh-100 row-reverse">
 
-            <b-col id="sidePart" sm="2" lg="7">
+            <b-col id="sidePart" sm="12" lg="7" md="12">
                 
             </b-col>
 
-            <b-col  id="cont" lg="5" md="12" >
+            <b-col  id="cont" lg="5" md="12" sm="12">
                 <b-form id="form">
                 <b-form-group>
                     <b-input-group class="mb-4">
-                        <b-form-input type="email" placeholder="Email"  required></b-form-input>
+                        <b-form-input v-model="email" type="email" placeholder="Email"  required @keyup.enter="login"></b-form-input>
                     </b-input-group>
                 
                     <b-input-group class="mb-4">
-                        <b-form-input type="password" placeholder="Password"  required></b-form-input>
+                        <b-form-input v-model="password" type="password" placeholder="Password"  required @keyup.enter="login"></b-form-input>
                     </b-input-group>
                     
                 </b-form-group>
@@ -33,7 +33,7 @@
             
         </b-row>
         
-    </b-container>
+    </div>
   
 </template>
 
@@ -51,7 +51,7 @@
         methods: {
             async login() {
                 try {
-                    await axios.post('authRoutes/signin', {
+                    await axios.post('auth/signin', {
                         email: this.email,
                         password: this.password
                     })

@@ -26,7 +26,7 @@
 
     .active {
         background-color: #2CD681;
-        border-radius: 15px;
+        border-radius: 10px;
     }
 
 

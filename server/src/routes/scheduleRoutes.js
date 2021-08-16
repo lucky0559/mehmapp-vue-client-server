@@ -45,7 +45,8 @@ router.get('/getDate/:date', async(req,res) => {
     
     try{
         const selected = await db.promise().query(`SELECT * FROM appointment WHERE date = '${date}' `)
-        res.status(200).send(selected[0][0]);
+        // console.log(selected[0])
+        res.status(200).send(selected[0]);
     }
     catch(err) {
         res.status(400).send(err)

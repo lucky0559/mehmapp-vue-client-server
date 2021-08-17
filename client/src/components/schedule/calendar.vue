@@ -89,16 +89,49 @@
                 </b-form-group>
                 
             </b-form>
+            
 
-            <b-modal
-                id="confirm"
-                title="Confirm"
-            >
-
-            </b-modal>
+            
             
 
         </b-modal>
+
+        <b-alert 
+    v-model="empty"
+    class="position-fixed fixed-top m-0 rounded-0"
+    style="z-index: 2000;"
+    variant="danger"
+    dismissible
+    >
+    Empty Field/s
+    </b-alert>
+    <b-alert 
+        v-model="invalid"
+        class="position-fixed fixed-top m-0 rounded-0"
+        style="z-index: 2000;"
+        variant="danger"
+        dismissible
+    >
+    Invalid Contact Number
+    </b-alert>
+    <b-alert 
+        v-model="existing"
+        class="position-fixed fixed-top m-0 rounded-0"
+        style="z-index: 2000;"
+        variant="warning"
+        dismissible
+    >
+    Existing Schedule
+    </b-alert>
+    <b-alert 
+        v-model="added"
+        class="position-fixed fixed-top m-0 rounded-0"
+        style="z-index: 2000;"
+        variant="success"
+        dismissible
+    >
+    Schedule Added!
+    </b-alert>
       
     </b-container>
 </template>
@@ -128,31 +161,53 @@ import axios from '../../api/api'
                 { key: 'buttons', label: '' },
             ],
             loading: false,
+            empty: false,
+            invalid: false,
+            existing: false,
+            added: false
         }),
         methods: {
             confirm() {
 
-                // if(!this.form.user_id, !this.form.set_date, !this.form.selected_time, !this.form.name, !this.form.contact_number) {
-                //     return this.empty_field = true
-                //     return console.log('empty field')
-                // }
+                if(!this.form.user_id || !this.form.set_date || !this.form.selected_time || !this.form.contact_number) {
+                    this.form.user_id = ''
+                    this.form.set_date = ''
+                    this.form.selected_time = ''
+                    this.form.contact_number = ''
+                    this.empty = true
+                    return console.log('empty field')
+                }
 
+                if(this.form.contact_number.length < 11 || !this.form.contact_number.includes('09')) {
+                    this.invalid = true
+                    return console.log('Please provide valid contact number')
+                }
                 
 
                 this.$bvModal.msgBoxConfirm(`Want to add schedule in this student with User ID of ${this.form.user_id}? `, {
                     title: "Please Confirm",
                     centered: true
                 })
-                .then(value => {
+                .then(async value => {
                     if(value) {
-                        axios.post('/schedule/add', {
+                        try {
+                            const response = await axios.post('/schedule/add', {
                                 user_id: this.form.user_id,
                                 date: this.form.set_date,
                                 time: this.form.selected_time,
                                 name: this.form.name,
                                 contact_number: this.form.contact_number
                             })
-                        console.log("Confirmed!")
+                            this.added = true
+                            console.log(response)
+                        }
+                        catch(error) {
+                            if(error.response) {
+                                this.existing = true
+                                return console.log(error.response.data)
+                            }
+                        }
+                        
                     }
                     else {
                         console.log("Cancelled!")
@@ -191,7 +246,7 @@ import axios from '../../api/api'
                 return !this.form.set_date.length > 0 ? false : true
             },
             contact_checker() {
-                return !this.form.contact_number > 0 ? false : true
+                return this.form.contact_number.length < 11 || this.form.contact_number.length > 11 || !this.form.contact_number.includes('09') ? false : true
             }
         }
         

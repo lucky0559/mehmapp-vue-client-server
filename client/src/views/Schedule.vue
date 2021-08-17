@@ -2,7 +2,7 @@
     <b-container class="vh-100">
         <app-header></app-header>
         <h1>Schedule</h1>
-            <app-calendar></app-calendar>
+        <app-calendar></app-calendar>
         
         
     </b-container>

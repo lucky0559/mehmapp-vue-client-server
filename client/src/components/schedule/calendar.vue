@@ -23,7 +23,7 @@
                 >
 
                 <template #cell(buttons)="row" v-if="selected_date"> 
-                    <b-button class="m-2" variant="outline-primary" size="sm" @click="edit(row.item)">
+                    <b-button class="m-2" variant="outline-primary" size="sm" @click="setter(row.item)" v-b-modal.edit>
                         Edit
                     </b-button>
                     <b-button style="margin:3" variant="outline-primary" size="sm" @click="del(row.item)">
@@ -32,6 +32,48 @@
                 </template>
                     
                 </b-table>
+<!-- edit -->
+                <b-modal
+                    id="edit" 
+                    title="Edit"
+                    ok-title="Save"
+                    @ok ="edit"
+                >
+                    <b-form>
+                        <b-form-group 
+                            id="group_uid" 
+                            class="mb-3" 
+                        >
+                            <label for="user_id">User ID</label>
+                            <b-form-input 
+                                id="user_id"
+                                type="number"
+                                required
+                                v-model="form.user_id"
+                                :state="id_checker"
+                                
+                            ></b-form-input>
+                        </b-form-group>
+                        <b-form-group id="group_date" class="mb-3">
+                            <b-form-datepicker v-model="form.set_date" :state="date_checker"></b-form-datepicker>
+                        </b-form-group>
+                        <b-form-group id="group_time" label="Time" v-slot="{ ariaDescribedby }">
+                            <b-form-radio class="mb-2" v-model="form.selected_time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
+                            <b-form-radio class="mb-4" v-model="form.selected_time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
+                        </b-form-group>
+                        <b-form-group id="number" class="mb-3">
+                            <label for="number">Contact Number</label>
+                            <b-form-input
+                                type="number"
+                                required
+                                id="number"
+                                v-model="form.contact_number"
+                                :state="contact_checker"
+                            ></b-form-input>
+                        </b-form-group>
+                        
+                    </b-form>
+                </b-modal>
 
                 <div class="text-center" v-if="loading">
                     <b-spinner variant="secondary" class="m-5"></b-spinner>
@@ -132,6 +174,24 @@
     >
     Schedule Added!
     </b-alert>
+    <b-alert 
+        v-model="editted"
+        class="position-fixed fixed-top m-0 rounded-0"
+        style="z-index: 2000;"
+        variant="success"
+        dismissible
+    >
+    Editted Saved!
+    </b-alert>
+    <b-alert 
+        v-model="deleted"
+        class="position-fixed fixed-top m-0 rounded-0"
+        style="z-index: 2000;"
+        variant="warning"
+        dismissible
+    >
+    Schedule Deleted!
+    </b-alert>
       
     </b-container>
 </template>
@@ -143,18 +203,17 @@ import axios from '../../api/api'
     export default {
         data: () => ({
             form: {
+                appointment_id: '',
                 user_id: '',
                 set_date: '',
                 selected_time: '',
                 contact_number: '',
-                name: ''
             },
             selected_date: '',
             sched_day: [],
             fields: [
                 { key: 'appointment_id', label: 'Appointment ID' },
                 { key: 'user_id', label: 'User ID' },
-                { key: 'name', label: 'Name' },
                 { key: 'date', label: 'Date' },
                 { key: 'time', label: 'Time' },
                 { key: 'contact_number', label: 'Contact Number' },
@@ -164,7 +223,9 @@ import axios from '../../api/api'
             empty: false,
             invalid: false,
             existing: false,
-            added: false
+            added: false,
+            editted: false,
+            deleted: false
         }),
         methods: {
             confirm() {
@@ -199,6 +260,12 @@ import axios from '../../api/api'
                                 contact_number: this.form.contact_number
                             })
                             this.added = true
+                            this.form.appointment_id = ''
+                            this.form.user_id = ''
+                            this.form.set_date = ''
+                            this.form.selected_time = ''
+                            this.form.contact_number = ''
+                            this.selectSched();
                             console.log(response)
                         }
                         catch(error) {
@@ -226,11 +293,53 @@ import axios from '../../api/api'
                 this.sched_day.push(day.data)
                 console.log(this.sched_day)
             },
-            edit(data) {
-                console.log("Edit" + data.user_id)
+            async edit() {
+                await axios.put(`/schedule/edit/${this.form.appointment_id}`, {
+                    user_id: this.form.user_id,
+                    date: this.form.set_date,
+                    time: this.form.selected_time,
+                    contact_number: this.form.contact_number
+                })
+                this.selectSched();
+                this.form.appointment_id = ''
+                this.form.user_id = ''
+                this.form.set_date = ''
+                this.form.selected_time = ''
+                this.form.contact_number = ''
+                this.editted = true
+                console.log("Edited" + this.form.appointment_id)
+
             },
             del(data) {
-                console.log("Delete" + data.user_id)
+                this.$bvModal.msgBoxConfirm(`Want to delete this schedule with User ID of ${data.user_id}? `, {
+                    title: "Please Confirm to delete",
+                    centered: true
+                })
+                .then (async value => {
+                    if(value) {
+                        try {
+                            await axios.delete(`/schedule/delete/${data.appointment_id}`)
+                            this.selectSched();
+                            this.deleted = true
+                            console.log("Deleted" + data.appointment_id)
+                        }
+                        catch(error) {
+                            console.log(error)
+                        }
+                        
+                    }
+                    else {
+                        console.log("Delete Cancelled!")
+                    }
+                } )
+                
+            },
+            setter(data) {
+                this.form.appointment_id = data.appointment_id
+                this.form.user_id = data.user_id
+                this.form.set_date = data.date
+                this.form.selected_time = data.time
+                this.form.contact_number = data.contact_number
             }
         },
         watch: {

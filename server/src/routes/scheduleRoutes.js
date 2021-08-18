@@ -70,12 +70,13 @@ router.delete('/delete/:appointment_id', async(req,res) => {
 })
 
 
-router.put('/edit', async(req,res) => {
+router.put('/edit/:apointment_id', async(req,res) => {
 
-    const { appointment_id, user_id, date, time, name, contact_number } = req.body;
+    const { user_id, date, time, contact_number } = req.body;
+    const app_id = req.params.apointment_id
 
     try {
-        await db.promise().query(`UPDATE appointment SET user_id = '${user_id}', date = '${date}', time = '${time}', name = '${name}', contact_number = '${contact_number}' WHERE appointment_id = '${appointment_id}' `)
+        await db.promise().query(`UPDATE appointment SET user_id = '${user_id}', date = '${date}', time = '${time}', contact_number = '${contact_number}' WHERE appointment_id = '${app_id}' `)
         res.status(200).send("Updated Successfully!")
     }
     catch(err) {

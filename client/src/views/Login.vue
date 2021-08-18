@@ -14,9 +14,12 @@
                         <b-form-input v-model="email" type="email" placeholder="Email"  required @keyup.enter="login"></b-form-input>
                     </b-input-group>
                 
-                    <b-input-group class="mb-4">
+                    <b-input-group class="mb-3">
                         <b-form-input v-model="password" type="password" placeholder="Password"  required @keyup.enter="login"></b-form-input>
                     </b-input-group>
+                    <div style="margin-bottom: 25px;">
+                        {{ error }}
+                    </div>
                     
                 </b-form-group>
                 
@@ -45,7 +48,8 @@
         data() {
             return {
                 email: '',
-                password: ''
+                password: '',
+                error: ''
             }
         },
         methods: {
@@ -55,13 +59,27 @@
                         email: this.email,
                         password: this.password
                     })
-                    console.log("LoggedIn!!!!")
-                    this.$router.push({ path: '/schedule' })
+                    .then(res => {
+                        if(res.status === 201) {
+                            console.log(res.data.token)
+                            localStorage.setItem('token', res.data.token)
+                            console.log("LoggedIn!!!!")
+                            this.error = ''
+                            this.$router.push({ path: '/schedule' })
+                        }
+                    })
+                    
                 }
                 catch(err) {
+                    this.error = err.response.data.error
                     console.log("Invalid email or password");
                     this.password = '';
                 }
+            }
+        },
+        created() {
+            if(localStorage.getItem('token') != null) {
+                this.$router.push('/schedule')
             }
         }
     }

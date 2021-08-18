@@ -15,6 +15,11 @@ export default {
     components: {
         appHeader: Header,
         appForms: AssessmentForm
+    },
+    created() {
+        if(localStorage.getItem('token') === null) {
+            this.$router.push('/')
+        }
     }
 }
 </script>

@@ -17,6 +17,11 @@ import Calendar from '../components/schedule/calendar.vue'
         components: {
             appHeader: Header,
             appCalendar: Calendar
+        },
+        created() {
+            if(localStorage.getItem('token') === null) {
+                this.$router.push('/')
+            }
         }
     }
 </script>

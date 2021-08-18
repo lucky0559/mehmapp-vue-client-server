@@ -5,17 +5,31 @@
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-item to="/schedule" exact-active-class="active">
+                    <b-nav-item to="/schedule" active-class="active">
                              Schedule
                     </b-nav-item>
                     <b-nav-item to="/reports" active-class="active">
                         Assessment Form Reports
+                    </b-nav-item>
+                    <b-nav-item @click="logout" exact-active-class="active">
+                        Logout
                     </b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
     </b-container>
 </template>
+
+<script>
+export default {
+    methods: {
+        logout() {
+            localStorage.clear();
+            this.$router.push('/')
+        }
+    }
+}
+</script>
 
 
 <style scoped>

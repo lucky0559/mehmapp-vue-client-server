@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const router = Router();
 const db = require('../db/database')
-
+const jwt = require('jsonwebtoken')
 
 // router.post('/signup', async(req, res) => {
 //     const { fullname, email, phoneNumber, studentNumber } = req.body;
@@ -40,11 +40,12 @@ router.post('/signin', async(req, res) => {
     try {
 
         if(email === 'cvsu@cvsu.edu.ph' && password === 'cvsuPassword') {
-            res.status(201).send("Logged In");
+            const token = jwt.sign({ email }, 'MY_MEHMAPP_KEY')
+            res.status(201).send({token: token});
         }
 
         else {
-            res.status(400).send("Invalid Email or Password")
+            res.status(400).send({error: "Invalid Email or Password"})
         }
 
     }

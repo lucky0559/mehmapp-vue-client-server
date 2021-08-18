@@ -3,6 +3,59 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-    
+export const store = new Vuex.Store({
+    state: {
+        form: {
+            appointment_id: '',
+            user_id: '',
+            set_date: '',
+            selected_time: '',
+            contact_number: '',
+        },
+    },
+    getters: {
+        appointment_id: state => {
+            return state.form.appointment_id
+        },
+        user_id: state => {
+            return state.form.user_id
+        },
+        set_date: state => {
+            return state.form.set_date
+        },
+        selected_time: state => {
+            return state.form.selected_time
+        },
+        contact_number: state => {
+            return state.form.contact_number
+        }
+    },
+    mutations: {
+        update_user_id: (state, payload) => {
+            state.form.user_id = payload
+        },
+        update_date: (state, payload) => {
+            state.form.set_date = payload
+        },
+        update_time: (state, payload) => {
+            state.form.selected_time = payload
+        },
+        update_contact: (state, payload) => {
+            state.form.contact_number = payload
+        },
+    },
+    actions: {
+        updateUserId({commit}, payload) {
+            commit('update_user_id', payload)
+        },
+        updateDate({ commit }, payload) {
+            commit('update_date', payload)
+        },
+        updateTime({ commit }, payload) {
+            commit('update_time', payload)
+        },
+        updateContact({ commit }, payload) {
+            commit('update_contact', payload)
+        },
+    }
 })

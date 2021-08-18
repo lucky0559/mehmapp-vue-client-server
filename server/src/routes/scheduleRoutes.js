@@ -3,17 +3,17 @@ const router= Router();
 const db = require('../db/database')
 
 router.post('/add', async(req,res) => {
-    const { user_id, date, time, name, contact_number } = req.body;
+    const { user_id, date, time, contact_number } = req.body;
     
 
-    if(user_id, date, time, name, contact_number) {
+    if(user_id, date, time, contact_number) {
         try {
             schedule_check = await db.promise().query(`SELECT * FROM appointment WHERE date = '${date}' && time = '${time}' `);
             if(schedule_check[0].length > 0) {
                 res.status(400).send("Schedule not available");
             }
             else {
-                await db.promise().query(`INSERT INTO appointment(user_id, date, time, name, contact_number) VALUES('${user_id}', '${date}', '${time}', '${name}', '${contact_number}' ) `)
+                await db.promise().query(`INSERT INTO appointment(user_id, date, time, contact_number) VALUES('${user_id}', '${date}', '${time}', '${contact_number}' ) `)
                 res.status(201).send("Schedule Added!")
             }
         }

@@ -49,17 +49,17 @@
                                 id="user_id"
                                 type="number"
                                 required
-                                v-model="form.user_id"
+                                v-model="user_id"
                                 :state="id_checker"
                                 
                             ></b-form-input>
                         </b-form-group>
                         <b-form-group id="group_date" class="mb-3">
-                            <b-form-datepicker v-model="form.set_date" :state="date_checker"></b-form-datepicker>
+                            <b-form-datepicker v-model="date" :state="date_checker"></b-form-datepicker>
                         </b-form-group>
                         <b-form-group id="group_time" label="Time" v-slot="{ ariaDescribedby }">
-                            <b-form-radio class="mb-2" v-model="form.selected_time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
-                            <b-form-radio class="mb-4" v-model="form.selected_time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
+                            <b-form-radio class="mb-2" v-model="time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
+                            <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
                         </b-form-group>
                         <b-form-group id="number" class="mb-3">
                             <label for="number">Contact Number</label>
@@ -67,7 +67,7 @@
                                 type="number"
                                 required
                                 id="number"
-                                v-model="form.contact_number"
+                                v-model="contact_number"
                                 :state="contact_checker"
                             ></b-form-input>
                         </b-form-group>
@@ -90,7 +90,7 @@
          
         
 
-        
+        <!-- add -->
          
         <b-modal 
             id="add" 
@@ -108,16 +108,16 @@
                         type="number"
                         placeholder="User ID"
                         required
-                        v-model="form.user_id"
+                        v-model="user_id"
                         :state="id_checker"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group id="group_date" class="mb-3">
-                    <b-form-datepicker v-model="form.set_date" :state="date_checker"></b-form-datepicker>
+                    <b-form-datepicker v-model="date" :state="date_checker"></b-form-datepicker>
                 </b-form-group>
                 <b-form-group id="group_time" label="Time" v-slot="{ ariaDescribedby }">
-                    <b-form-radio class="mb-2" v-model="form.selected_time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
-                    <b-form-radio class="mb-4" v-model="form.selected_time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
+                    <b-form-radio class="mb-2" v-model="time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
                 </b-form-group>
                 <b-form-group id="number" class="mb-3">
                     <b-form-input
@@ -125,7 +125,7 @@
                         required
                         id="number"
                         placeholder="Phone Number"
-                        v-model="form.contact_number"
+                        v-model="contact_number"
                         :state="contact_checker"
                     ></b-form-input>
                 </b-form-group>
@@ -202,13 +202,6 @@ import axios from '../../api/api'
 
     export default {
         data: () => ({
-            form: {
-                appointment_id: '',
-                user_id: '',
-                set_date: '',
-                selected_time: '',
-                contact_number: '',
-            },
             selected_date: '',
             sched_day: [],
             fields: [
@@ -230,22 +223,22 @@ import axios from '../../api/api'
         methods: {
             confirm() {
 
-                if(!this.form.user_id || !this.form.set_date || !this.form.selected_time || !this.form.contact_number) {
-                    this.form.user_id = ''
-                    this.form.set_date = ''
-                    this.form.selected_time = ''
-                    this.form.contact_number = ''
+                if(!this.$store.state.form.user_id || !this.$store.state.form.set_date || !this.$store.state.form.selected_time || !this.$store.state.form.contact_number) {
+                    this.$store.state.form.user_id = ''
+                    this.$store.state.form.set_date = ''
+                    this.$store.state.form.selected_time = ''
+                    this.$store.state.form.contact_number = ''
                     this.empty = true
                     return console.log('empty field')
                 }
 
-                if(this.form.contact_number.length < 11 || !this.form.contact_number.includes('09')) {
+                if(this.$store.state.form.contact_number.length < 11 || !this.$store.state.form.contact_number.includes('09')) {
                     this.invalid = true
                     return console.log('Please provide valid contact number')
                 }
                 
 
-                this.$bvModal.msgBoxConfirm(`Want to add schedule in this student with User ID of ${this.form.user_id}? `, {
+                this.$bvModal.msgBoxConfirm(`Want to add schedule in this student with User ID of ${this.$store.state.form.user_id}? `, {
                     title: "Please Confirm",
                     centered: true
                 })
@@ -253,18 +246,17 @@ import axios from '../../api/api'
                     if(value) {
                         try {
                             const response = await axios.post('/schedule/add', {
-                                user_id: this.form.user_id,
-                                date: this.form.set_date,
-                                time: this.form.selected_time,
-                                name: this.form.name,
-                                contact_number: this.form.contact_number
+                                user_id: this.$store.state.form.user_id,
+                                date: this.$store.state.form.set_date,
+                                time: this.$store.state.form.selected_time,
+                                contact_number: this.$store.state.form.contact_number
                             })
                             this.added = true
-                            this.form.appointment_id = ''
-                            this.form.user_id = ''
-                            this.form.set_date = ''
-                            this.form.selected_time = ''
-                            this.form.contact_number = ''
+                            this.$store.state.form.appointment_id = ''
+                            this.$store.state.form.user_id = ''
+                            this.$store.state.form.set_date = ''
+                            this.$store.state.form.selected_time = ''
+                            this.$store.state.form.contact_number = ''
                             this.selectSched();
                             console.log(response)
                         }
@@ -294,20 +286,20 @@ import axios from '../../api/api'
                 console.log(this.sched_day)
             },
             async edit() {
-                await axios.put(`/schedule/edit/${this.form.appointment_id}`, {
-                    user_id: this.form.user_id,
-                    date: this.form.set_date,
-                    time: this.form.selected_time,
-                    contact_number: this.form.contact_number
+                await axios.put(`/schedule/edit/${this.$store.state.form.appointment_id}`, {
+                    user_id: this.$store.state.form.user_id,
+                    date: this.$store.state.form.set_date,
+                    time: this.$store.state.form.selected_time,
+                    contact_number: this.$store.state.form.contact_number
                 })
                 this.selectSched();
-                this.form.appointment_id = ''
-                this.form.user_id = ''
-                this.form.set_date = ''
-                this.form.selected_time = ''
-                this.form.contact_number = ''
+                console.log("Edited" + this.$store.state.form.appointment_id)
+                this.$store.state.form.appointment_id = ''
+                this.$store.state.form.user_id = ''
+                this.$store.state.form.set_date = ''
+                this.$store.state.form.selected_time = ''
+                this.$store.state.form.contact_number = ''
                 this.editted = true
-                console.log("Edited" + this.form.appointment_id)
 
             },
             del(data) {
@@ -335,12 +327,12 @@ import axios from '../../api/api'
                 
             },
             setter(data) {
-                this.form.appointment_id = data.appointment_id
-                this.form.user_id = data.user_id
-                this.form.set_date = data.date
-                this.form.selected_time = data.time
-                this.form.contact_number = data.contact_number
-            }
+                this.$store.state.form.appointment_id = data.appointment_id
+                this.$store.state.form.user_id = data.user_id
+                this.$store.state.form.set_date = data.date
+                this.$store.state.form.selected_time = data.time
+                this.$store.state.form.contact_number = data.contact_number
+            },
         },
         watch: {
             selected_date() {
@@ -349,14 +341,55 @@ import axios from '../../api/api'
         },
         computed: {
             id_checker() {
-                return !this.form.user_id.length > 0 ? false : true
+                return !this.$store.state.form.user_id.length > 0 ? false : true
             },
             date_checker() {
-                return !this.form.set_date.length > 0 ? false : true
+                return !this.$store.state.form.set_date.length > 0 ? false : true
             },
             contact_checker() {
-                return this.form.contact_number.length < 11 || this.form.contact_number.length > 11 || !this.form.contact_number.includes('09') ? false : true
+                return this.$store.state.form.contact_number.length < 11 || this.$store.state.form.contact_number.length > 11 || !this.$store.state.form.contact_number.includes('09') ? false : true
+            },
+            user_id: {
+                get() {
+                    return this.$store.getters.user_id;
+                },
+                set(value) {
+                    this.$store.dispatch('updateUserId', value)
+                }
+            },
+            date: {
+                get() {
+                    return this.$store.getters.set_date
+                },
+                set(value) {
+                    this.$store.dispatch('updateDate', value)
+                }
+            },
+            time: {
+                get() {
+                    return this.$store.getters.selected_time
+                },
+                set(value) {
+                    this.$store.dispatch('updateTime', value)
+                }
+            },
+            contact_number: {
+                get() {
+                    return this.$store.getters.contact_number
+                },
+                set(value) {
+                    this.$store.dispatch('updateContact', value)
+                }
             }
+        },
+        created() {
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = String(today.getMonth() + 1).padStart(2, '0')
+            var day = String(today.getDate()).padStart(2, '0')
+            this.selected_date = year + '/' + month + '/' + day
+            this.selectSched()
+            console.log(this.selected_date)
         }
         
     }

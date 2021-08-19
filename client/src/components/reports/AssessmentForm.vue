@@ -12,11 +12,16 @@
             :fields="fields"
             class="text-center"
         >
-
+            <template #cell(buttons)="row" v-if="forms"> 
+                    <b-button class="m-2" variant="primary" size="sm" @click="setter(row.item)">
+                        Print
+                    </b-button>
+            </template>
         </b-table>
         <div class="text-center" v-if="loading">
             <b-spinner variant="secondary" class="m-5"></b-spinner>
         </div>
+
          
     </b-container>
 </template>
@@ -31,7 +36,6 @@
                 fields: [
                     { key: 'formId', label: 'Form ID' },
                     { key: 'userId', label: 'User ID' },
-                    { key: 'fullname', label: 'Fullname' },
                     { key: 'studentNumber', label: 'Student Number' },
                     { key: 'phoneNumber', label: 'Contact Number' },
                     { key: 'userdescribe', label: 'Describe' },
@@ -41,10 +45,10 @@
                     { key: 'userIfYes', label: 'If Yes' },
                     { key: 'userDuration', label: 'Duration' },
                     { key: 'userPreviousCounseling', label: 'Previous Counseling' },
+                    { key: 'buttons', label: '' },
                 ],
                 forms: [],
                 loading: true,
-                
             }
         },
         async beforeCreate() {
@@ -53,7 +57,12 @@
             this.loading = false
             
         },
-        
+        methods: {
+            setter(data) {
+                this.$store.dispatch('printInfo', data)
+                this.$router.push({path: '/print'})
+            },
+        }
     }
 </script>
 

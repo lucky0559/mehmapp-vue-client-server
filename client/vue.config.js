@@ -2,7 +2,9 @@ module.exports  = {
     configureWebpack: {
         devServer: {
             proxy: {
-                target: 'https://mehmapp.herokuapp.com/'
+                '^/': {
+                    target: 'https://mehmapp.herokuapp.com/'
+                }
             }
         }
     }

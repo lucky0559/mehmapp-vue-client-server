@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid id="app">
+  <b-container fluid id="app" class="vh-100">
     <router-view></router-view>
   </b-container>
 </template>
@@ -12,10 +12,10 @@
   }
 </script>
 
-<style>
-
+<style scoped>
   #app {
     background-color: #F3F2F0;
   }
-
 </style>
+
+  

@@ -283,7 +283,6 @@ import axios from '../../api/api'
                 const day = await axios.get(`/schedule/getDate/${convert}`)
                 this.loading = false;
                 this.sched_day.push(day.data)
-                console.log(this.sched_day)
             },
             async edit() {
                 await axios.put(`/schedule/edit/${this.$store.state.form.appointment_id}`, {
@@ -389,7 +388,6 @@ import axios from '../../api/api'
             var day = String(today.getDate()).padStart(2, '0')
             this.selected_date = year + '/' + month + '/' + day
             this.selectSched()
-            console.log(this.selected_date)
         }
         
     }
@@ -397,8 +395,6 @@ import axios from '../../api/api'
 
 <style scoped>
 
-    .container {
-        background-color: #F3F2F0;
-    }
+    
 
 </style>

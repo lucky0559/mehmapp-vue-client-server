@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid id="app" class="vh-100">
+  <b-container fluid id="app">
     <router-view></router-view>
   </b-container>
 </template>
@@ -15,6 +15,8 @@
 <style scoped>
   #app {
     background-color: #F3F2F0;
+    height: auto;
+    overflow: auto;
   }
 </style>
 

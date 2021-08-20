@@ -12,7 +12,9 @@ export const store = new Vuex.Store({
             selected_time: '',
             contact_number: '',
         },
-        print_info: []
+        print_info: [],
+        all_forms: [],
+        multiple_print: []
     },
     getters: {
         appointment_id: state => {
@@ -47,7 +49,7 @@ export const store = new Vuex.Store({
         print_info: (state, payload) => {
             state.print_info = []
             state.print_info.push({ formId: payload.formId, userId: payload.userId, fullname: payload.fullname, studentNumber: payload.studentNumber, phoneNumber: payload.phoneNumber })
-        }
+        },
     },
     actions: {
         updateUserId({commit}, payload) {
@@ -64,6 +66,6 @@ export const store = new Vuex.Store({
         },
         printInfo({ commit }, payload) {
             commit('print_info', payload)
-        }
+        },
     }
 })

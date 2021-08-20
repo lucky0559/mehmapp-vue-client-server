@@ -1,9 +1,22 @@
 <template>
-    <b-container>
+    <b-container class="vh-100">
         <div class="text-center pt-4">
-            <p><strong>CAVITE STATE UNIVERSITY</strong></p>
-            <p><strong>Office of Student Affairs and Services - Guidance Office</strong></p>
-            <p><strong>COUNSELING SERVICES - MASTERLIST</strong></p>
+            <b-col>
+                
+                <b-row>
+                    <img src="../../assets/cvsu_logo.png" style="width: 100px;height: 60px; position: relative; left: 50px; top: 75px">
+                </b-row>
+                    <b-row>
+                        <p><strong>CAVITE STATE UNIVERSITY</strong></p>
+                    <p><strong>Office of Student Affairs and Services - Guidance Office</strong></p>
+                    <p><strong>COUNSELING SERVICES - MASTERLIST</strong></p>
+                    </b-row>
+                
+                    
+                
+                
+            </b-col>
+            
         </div>
         <div>
             <p>School Year - <strong>SY {{ year }} </strong></p>
@@ -11,17 +24,15 @@
         <br><br><br>
         <div>
             <b-table
-                :items="this.$store.state.print_info"
+                :items="this.$store.state.multiple_print"
                 :fields="fields"
             >
 
             </b-table>
         </div>
         <br>
-        <br>
-        <br>
         <div id="print_button">
-            <b-button  variant="primary" @click="print">
+            <b-button  variant="primary" @click="print" class="mb-4">
                 Print
             </b-button>
         </div>
@@ -37,10 +48,10 @@
             return {
                 year: '',
                 fields: [
-                    { key: 'formId', label: 'Form ID' },
-                    { key: 'userId', label: 'User ID' },
-                    { key: 'fullname', label: 'Fullname' },
-                    { key: 'studentNumber', label: 'Student Number' }
+                    { key: 'appointment_id', label: 'Appointment ID' },
+                    { key: 'user_id', label: 'User ID' },
+                    { key: 'contact_number', label: 'Contact Number' },
+                    { key: 'date', label: 'Date' }
                 ]
             }
         },

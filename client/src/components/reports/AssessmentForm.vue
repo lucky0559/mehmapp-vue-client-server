@@ -1,19 +1,29 @@
 <template>
     <b-container>
-        <!-- <b-form-input
-            placeholder="Search Form ID"
-            style="width: 170px"
-            type="number"
-            v-model="id"
-            @keyup.enter="search"
-        ></b-form-input> -->
+        <div>
+            <b-col>
+                <app-date-picker
+                    v-model="range"
+                    range
+                    valueType="format"
+                > </app-date-picker>
+            </b-col>
+            <b-col>
+                <b-button 
+                    variant="primary" 
+                    class="mt-2 mb-2" 
+                    @click="ranger"
+                >Print</b-button>
+            </b-col>
+        </div>
+        
         <b-table
-            :items="forms"
+            :items="this.$store.state.all_forms"
             :fields="fields"
             class="text-center"
         >
             <template #cell(buttons)="row" v-if="forms"> 
-                    <b-button class="m-2" variant="primary" size="sm" @click="setter(row.item)">
+                    <b-button class="m-2" variant="outline-primary" size="sm" @click="setter(row.item)">
                         Print
                     </b-button>
             </template>
@@ -29,6 +39,9 @@
 <script>
 
     import axios from '../../api/api'
+    import DatePicker from 'vue2-datepicker';
+    import 'vue2-datepicker/index.css';
+    import moment from 'moment'
 
     export default {
         data() {
@@ -49,11 +62,15 @@
                 ],
                 forms: [],
                 loading: true,
+                range: '',
+                start: '',
+                end: '',
+                allRange: [],
             }
         },
         async beforeCreate() {
             const response = await axios.get('/form/allForms')
-            this.forms = response.data
+            this.$store.state.all_forms = response.data
             this.loading = false
             
         },
@@ -62,6 +79,63 @@
                 this.$store.dispatch('printInfo', data)
                 this.$router.push({path: '/print'})
             },
+            async ranger() {
+                if(this.range.length > 0) {
+
+                    this.$store.state.multiple_print = []
+                    var date = await axios.get(`/schedule/getDate/${this.range[0]}`)
+                    if(!date.data[0] == "") {
+                            if(date.data.length > 1) {
+                            for(let b=0; b < date.data.length; b++) {
+                                this.$store.state.multiple_print.push(date.data[b])
+                            }
+                        }
+                    }
+                    
+                    var initial = this.range[0]
+                    var start = moment(this.range[0], "YYYY-MM-DD")
+                    var end = moment(this.range[1], "YYYY-MM-DD")
+                    var days_diff = moment.duration(end.diff(start)).asDays();
+                    console.log(this.allRange)
+
+                    for(let i = 0; i < days_diff; i++) {
+                        var split = initial.split('-')
+                        let new_date = new Date(parseInt(split[0]), parseInt(split[1]) - 1, parseInt(split[2]) + 1)
+                        initial = this.formatDate(new_date)
+                        const response = await axios.get(`/schedule/getDate/${initial}`)
+                        if(!response.data[0] == "") {
+                            
+                                
+                            
+                            if(response.data.length > 1) {
+                                for(let a = 0; a < response.data.length; a++) {
+                                    this.$store.state.multiple_print.push(response.data[a])
+                                }
+                            }
+                            else {
+                                this.$store.state.multiple_print.push(response.data[0])
+                            }
+                           
+                            
+                        }
+                    }
+
+                    console.log(this.$store.state.multiple_print)
+
+                    this.$router.push({path: '/print'})
+
+                }
+                else {
+                    console.log('empty')
+                }
+            },
+            formatDate(date) {
+                var m = moment(date)
+                return m.format('YYYY-MM-DD')
+            }
+        },
+        components: { 
+            appDatePicker: DatePicker 
         }
     }
 </script>

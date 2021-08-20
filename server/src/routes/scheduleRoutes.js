@@ -31,10 +31,10 @@ router.post('/add', async(req,res) => {
 // router.get('/getAll', async(req,res) => {
 //     try {
 //         const schedule = await db.promise().query(`SELECT * FROM appointment`);
-//         res.status(200).send(schedule[0][0]);
+//         res.status(200).send(schedule[0]);
 //     }
 //     catch(err) {
-//         res.status(400).send(err);
+//         res.status(400).send({msg: "Something Went Wrong"});
 //     }
         
 // })
@@ -53,6 +53,7 @@ router.get('/getDate/:date', async(req,res) => {
     }
 
 })
+
 
 
 router.delete('/delete/:appointment_id', async(req,res) => {

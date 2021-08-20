@@ -2,10 +2,11 @@
     <b-container class="vh-100">
         <div class="text-center pt-4">
             <b-col>
-                
+                <div id="logo">
                 <b-row>
                     <img src="../../assets/cvsu_logo.png" style="width: 100px;height: 60px; position: relative; left: 50px; top: 75px">
                 </b-row>
+                </div>
                     <b-row>
                         <p><strong>CAVITE STATE UNIVERSITY</strong></p>
                     <p><strong>Office of Student Affairs and Services - Guidance Office</strong></p>
@@ -78,5 +79,11 @@
         #print_button {
             display: none !important;
         }
+        #logo {
+            display: block !important;
+        }
+    }
+    #logo {
+        display: none;
     }
 </style>

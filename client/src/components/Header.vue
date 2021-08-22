@@ -1,7 +1,13 @@
 <template>
     <b-container fluid class="p-4"> 
         <b-navbar toggleable="md">
-            <b-navbar-brand>MeHMApp</b-navbar-brand>
+            <b-navbar-brand>
+                <b-img
+                    src="https://res.cloudinary.com/intro-pl/image/upload/v1629637389/mehmapp-vue/AppLogo_yp5npy.png"
+                    style="width: 70px;height:70px;"
+                    fluid
+                ></b-img>
+            </b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>

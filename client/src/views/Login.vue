@@ -4,6 +4,14 @@
         <b-row class="vh-100 row-reverse">
 
             <b-col id="sidePart" sm="12" lg="7" md="12">
+                <div id="divImg">
+                    <b-img
+                    center
+                    id="img"
+                    src="https://res.cloudinary.com/intro-pl/image/upload/v1629637389/mehmapp-vue/AppLogo_yp5npy.png"
+                    >
+                    </b-img>
+                </div>
                 
             </b-col>
 
@@ -120,5 +128,16 @@
         background-color:black;
         height: 585px;
         width: 60%;
+    }
+
+    #img {
+        width: 250px;
+        height: 250px;
+        
+    }
+
+    #divImg {
+        position: relative;
+        top: 30%;
     }
 </style>

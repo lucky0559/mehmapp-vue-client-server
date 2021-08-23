@@ -8,7 +8,7 @@
                     <b-img
                     center
                     id="img"
-                    src="https://res.cloudinary.com/intro-pl/image/upload/v1629637389/mehmapp-vue/AppLogo_yp5npy.png"
+                    src="https://res.cloudinary.com/intro-pl/image/upload/v1629696116/mehmapp-vue/AppLogo720x720_rwxfk8.png"
                     >
                     </b-img>
                 </div>

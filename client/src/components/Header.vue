@@ -3,7 +3,7 @@
         <b-navbar toggleable="md">
             <b-navbar-brand>
                 <b-img
-                    src="https://res.cloudinary.com/intro-pl/image/upload/v1629637389/mehmapp-vue/AppLogo_yp5npy.png"
+                    src="https://res.cloudinary.com/intro-pl/image/upload/v1629696116/mehmapp-vue/AppLogo720x720_rwxfk8.png"
                     style="width: 70px;height:70px;"
                     fluid
                 ></b-img>

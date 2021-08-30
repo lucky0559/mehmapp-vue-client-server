@@ -82,10 +82,11 @@
             async ranger() {
                 if(this.range.length > 0) {
 
+
                     this.$store.state.multiple_print = []
                     var date = await axios.get(`/schedule/getDate/${this.range[0]}`)
                     if(!date.data[0] == "") {
-                            if(date.data.length > 1) {
+                            if(date.data.length > 0) {
                             for(let b=0; b < date.data.length; b++) {
                                 this.$store.state.multiple_print.push(date.data[b])
                             }
@@ -121,6 +122,8 @@
                     }
 
                     console.log(this.$store.state.multiple_print)
+
+                    this.$store.state.print_range = this.range
 
                     this.$router.push({path: '/print'})
 

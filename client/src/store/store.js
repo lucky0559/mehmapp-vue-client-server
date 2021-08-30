@@ -11,10 +11,12 @@ export const store = new Vuex.Store({
             set_date: '',
             selected_time: '',
             contact_number: '',
+            status: '',
         },
         print_info: [],
         all_forms: [],
-        multiple_print: []
+        multiple_print: [],
+        print_range: [],
     },
     getters: {
         appointment_id: state => {
@@ -31,6 +33,9 @@ export const store = new Vuex.Store({
         },
         contact_number: state => {
             return state.form.contact_number
+        },
+        status: state => {
+            return state.form.status
         }
     },
     mutations: {
@@ -45,6 +50,9 @@ export const store = new Vuex.Store({
         },
         update_contact: (state, payload) => {
             state.form.contact_number = payload
+        },
+        update_status: (state, payload) => {
+            state.form.status = payload
         },
         print_info: (state, payload) => {
             state.print_info = []
@@ -63,6 +71,9 @@ export const store = new Vuex.Store({
         },
         updateContact({ commit }, payload) {
             commit('update_contact', payload)
+        },
+        updateStatus({ commit }, payload) {
+            commit('update_status', payload)
         },
         printInfo({ commit }, payload) {
             commit('print_info', payload)

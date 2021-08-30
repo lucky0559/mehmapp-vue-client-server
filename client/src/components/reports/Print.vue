@@ -11,6 +11,7 @@
                         <p><strong>CAVITE STATE UNIVERSITY</strong></p>
                     <p><strong>Office of Student Affairs and Services - Guidance Office</strong></p>
                     <p><strong>COUNSELING SERVICES - MASTERLIST</strong></p>
+                    <p><strong>As of {{from_date}} - {{to_date}} </strong></p>
                     </b-row>
                 
                     
@@ -32,6 +33,12 @@
             </b-table>
         </div>
         <br>
+        <br><br><br><br>
+        <div>
+            <p>____________________________________________</p>
+            <p><strong>Prepared by: Lucky </strong></p>
+        </div>
+        
         <div id="print_button">
             <b-button  variant="primary" @click="print" class="mb-4">
                 Print
@@ -53,7 +60,9 @@
                     { key: 'user_id', label: 'User ID' },
                     { key: 'contact_number', label: 'Contact Number' },
                     { key: 'date', label: 'Date' }
-                ]
+                ],
+                from_date: '',
+                to_date: ''
             }
         },
         beforeCreate() {
@@ -70,6 +79,15 @@
             const date = new Date();
             const year = date.getFullYear();
             this.year = year;
+
+            const fromDate = new Date(this.$store.state.print_range[0])
+            const toDate = new Date(this.$store.state.print_range[1])
+            var fromMonths = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ][fromDate.getMonth()]
+            var toMonths = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ][toDate.getMonth()]
+            var fromStr = fromMonths + ' ' + fromDate.getDate() + ',' + fromDate.getFullYear()
+            var toStr = toMonths + ' ' + toDate.getDate() + ',' + toDate.getFullYear()
+            this.from_date = fromStr
+            this.to_date = toStr
         }
     }
 </script>

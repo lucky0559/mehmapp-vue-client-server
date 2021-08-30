@@ -15,7 +15,7 @@
 
         <b-col xl="7" lg="8" md="*">
                 
-            <div v-if="sched_day" class="m-3">
+            <div v-if="sched_day" >
                 <b-table
                     :items="sched_day[0]"
                     :fields="fields"
@@ -23,11 +23,14 @@
                 >
 
                 <template #cell(buttons)="row" v-if="selected_date"> 
-                    <b-button class="m-2" variant="outline-primary" size="sm" @click="setter(row.item)" v-b-modal.edit>
+                    <b-button class="m-1" variant="outline-primary" size="sm" @click="setter(row.item)" v-b-modal.edit>
                         Edit
                     </b-button>
-                    <b-button style="margin:3" variant="outline-primary" size="sm" @click="del(row.item)">
+                    <b-button class="m-1"  variant="outline-primary" size="sm" @click="del(row.item)">
                         Delete
+                    </b-button>
+                    <b-button class="m-1" variant="outline-primary" size="sm" @click="setter(row.item)" v-b-modal.set_status>
+                        Modify Status
                     </b-button>
                 </template>
                     
@@ -138,6 +141,31 @@
 
         </b-modal>
 
+
+    <!-- set status -->
+                <b-modal
+                    id="set_status" 
+                    title="Status"
+                    ok-title="Save"
+                    @ok ="setStatus"
+                >
+                    <b-form>
+                        <b-form-group 
+                            id="group_status" 
+                            class="mb-3" 
+                        >
+                            <label for="status">Status</label>
+                            <b-form-input 
+                                id="status"
+                                v-model="status"
+                                :state="status_checker" 
+                            ></b-form-input>
+                        </b-form-group>
+                    </b-form>
+                </b-modal>
+
+
+
         <b-alert 
     v-model="empty"
     class="position-fixed fixed-top m-0 rounded-0"
@@ -210,6 +238,7 @@ import axios from '../../api/api'
                 { key: 'date', label: 'Date' },
                 { key: 'time', label: 'Time' },
                 { key: 'contact_number', label: 'Contact Number' },
+                { key: 'status', label: 'Status' },
                 { key: 'buttons', label: '' },
             ],
             loading: false,
@@ -285,21 +314,37 @@ import axios from '../../api/api'
                 this.sched_day.push(day.data)
             },
             async edit() {
-                await axios.put(`/schedule/edit/${this.$store.state.form.appointment_id}`, {
+
+                try {
+                    await axios.put(`/schedule/edit/${this.$store.state.form.appointment_id}`, {
                     user_id: this.$store.state.form.user_id,
                     date: this.$store.state.form.set_date,
                     time: this.$store.state.form.selected_time,
-                    contact_number: this.$store.state.form.contact_number
-                })
-                this.selectSched();
-                console.log("Edited" + this.$store.state.form.appointment_id)
-                this.$store.state.form.appointment_id = ''
-                this.$store.state.form.user_id = ''
-                this.$store.state.form.set_date = ''
-                this.$store.state.form.selected_time = ''
-                this.$store.state.form.contact_number = ''
-                this.editted = true
+                    contact_number: this.$store.state.form.contact_number,
+                    status: this.$store.state.form.status
+                    })
 
+                    
+                    
+                    this.selectSched();
+                    console.log("Edited" + this.$store.state.form.appointment_id)
+                    this.$store.state.form.appointment_id = ''
+                    this.$store.state.form.user_id = ''
+                    this.$store.state.form.set_date = ''
+                    this.$store.state.form.selected_time = ''
+                    this.$store.state.form.contact_number = ''
+                    this.$store.state.form.status = ''
+                    this.editted = true
+                }
+                catch(err) {
+
+                    
+                    
+                    if(err.response && err.response.data) {
+                        return this.existing = true
+                    }
+                }
+                   
             },
             del(data) {
                 this.$bvModal.msgBoxConfirm(`Want to delete this schedule with User ID of ${data.user_id}? `, {
@@ -331,7 +376,32 @@ import axios from '../../api/api'
                 this.$store.state.form.set_date = data.date
                 this.$store.state.form.selected_time = data.time
                 this.$store.state.form.contact_number = data.contact_number
+                this.$store.state.form.status = data.status
             },
+            async setStatus() {
+                try {
+                    await axios.put(`/schedule/editStatus/${this.$store.state.form.appointment_id}`, {
+                    status: this.$store.state.form.status
+                    })
+
+                    
+                    
+                    this.selectSched();
+                    console.log("Edited" + this.$store.state.form.appointment_id)
+                    this.$store.state.form.appointment_id = ''
+                    this.$store.state.form.user_id = ''
+                    this.$store.state.form.set_date = ''
+                    this.$store.state.form.selected_time = ''
+                    this.$store.state.form.contact_number = ''
+                    this.$store.state.form.status = ''
+                    this.editted = true
+                }
+                catch(err) {
+                    if(err.response && err.response.data) {
+                        return this.existing = true
+                    }
+                }
+            }
         },
         watch: {
             selected_date() {
@@ -347,6 +417,9 @@ import axios from '../../api/api'
             },
             contact_checker() {
                 return this.$store.state.form.contact_number.length < 11 || this.$store.state.form.contact_number.length > 11 || !this.$store.state.form.contact_number.includes('09') ? false : true
+            },
+            status_checker() {
+                return this.$store.state.form.status.length <= 0  ? false : true
             },
             user_id: {
                 get() {
@@ -378,6 +451,14 @@ import axios from '../../api/api'
                 },
                 set(value) {
                     this.$store.dispatch('updateContact', value)
+                }
+            },
+            status: {
+                get() {
+                    return this.$store.getters.status
+                },
+                set(value) {
+                    this.$store.dispatch('updateStatus', value)
                 }
             }
         },

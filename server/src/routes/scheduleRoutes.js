@@ -13,7 +13,7 @@ router.post('/add', async(req,res) => {
                 res.status(400).send("Schedule not available");
             }
             else {
-                await db.promise().query(`INSERT INTO appointment(user_id, date, time, contact_number) VALUES('${user_id}', '${date}', '${time}', '${contact_number}' ) `)
+                await db.promise().query(`INSERT INTO appointment(user_id, date, time, contact_number, status) VALUES('${user_id}', '${date}', '${time}', '${contact_number}', '${'Waiting'}' ) `)
                 res.status(201).send("Schedule Added!")
             }
         }
@@ -73,12 +73,41 @@ router.delete('/delete/:appointment_id', async(req,res) => {
 
 router.put('/edit/:apointment_id', async(req,res) => {
 
-    const { user_id, date, time, contact_number } = req.body;
+    const { user_id, date, time, contact_number} = req.body;
     const app_id = req.params.apointment_id
 
     try {
-        await db.promise().query(`UPDATE appointment SET user_id = '${user_id}', date = '${date}', time = '${time}', contact_number = '${contact_number}' WHERE appointment_id = '${app_id}' `)
-        res.status(200).send("Updated Successfully!")
+
+        const response = await db.promise().query(`SELECT * FROM appointment WHERE time = '${time}' && date = '${date}' `)
+
+     
+        
+        if(response[0].length > 0 ) {
+                return res.status(400).send({message: 'Schedule not Available'})
+        }
+        else {
+            await db.promise().query(`UPDATE appointment SET user_id = '${user_id}', date = '${date}', time = '${time}', contact_number = '${contact_number}' WHERE appointment_id = '${app_id}' `)
+            res.status(200).send("Updated Successfully!")
+        }
+    }
+    catch(err) {
+        res.send(err);
+    }
+
+    
+})
+
+
+
+router.put('/editStatus/:apointment_id', async(req,res) => {
+
+    const { status } = req.body;
+    const app_id = req.params.apointment_id
+
+    try {
+            await db.promise().query(`UPDATE appointment SET status = '${status}' WHERE appointment_id = '${app_id}' `)
+            res.status(200).send("Updated Successfully!")
+        
     }
     catch(err) {
         res.send(err);

@@ -22,11 +22,11 @@
             :fields="fields"
             class="text-center"
         >
-            <template #cell(buttons)="row" v-if="forms"> 
+            <!-- <template #cell(buttons)="row" v-if="forms"> 
                     <b-button class="m-2" variant="outline-primary" size="sm" @click="setter(row.item)">
                         Print
                     </b-button>
-            </template>
+            </template> -->
         </b-table>
         <div class="text-center" v-if="loading">
             <b-spinner variant="secondary" class="m-5"></b-spinner>
@@ -58,7 +58,7 @@
                     { key: 'userIfYes', label: 'If Yes' },
                     { key: 'userDuration', label: 'Duration' },
                     { key: 'userPreviousCounseling', label: 'Previous Counseling' },
-                    { key: 'buttons', label: '' },
+                    // { key: 'buttons', label: '' },
                 ],
                 forms: [],
                 loading: true,

@@ -57,13 +57,7 @@
                                 
                             ></b-form-input>
                         </b-form-group>
-                        <b-form-group id="group_date" class="mb-3">
-                            <b-form-datepicker v-model="date" :state="date_checker"></b-form-datepicker>
-                        </b-form-group>
-                        <b-form-group id="group_time" label="Time" v-slot="{ ariaDescribedby }">
-                            <b-form-radio class="mb-2" v-model="time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
-                            <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
-                        </b-form-group>
+                        
                         <b-form-group id="number" class="mb-3">
                             <label for="number">Contact Number</label>
                             <b-form-input
@@ -318,10 +312,7 @@ import axios from '../../api/api'
                 try {
                     await axios.put(`/schedule/edit/${this.$store.state.form.appointment_id}`, {
                     user_id: this.$store.state.form.user_id,
-                    date: this.$store.state.form.set_date,
-                    time: this.$store.state.form.selected_time,
                     contact_number: this.$store.state.form.contact_number,
-                    status: this.$store.state.form.status
                     })
 
                     

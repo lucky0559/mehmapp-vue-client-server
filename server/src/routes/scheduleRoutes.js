@@ -78,12 +78,17 @@ router.put('/edit/:apointment_id', async(req,res) => {
 
     try {
 
-        await db.promise().query(`DELETE * FROM appointment WHERE time = '${time}' && date = '${date}' `)
+        // await db.promise().query(`DELETE * FROM appointment WHERE time = '${time}' && date = '${date}' `)
 
-     
-        
+        const schedule_check = await db.promise().query(`SELECT * FROM appointment WHERE date = '${date}' && time = '${time}' `);
+        if(schedule_check[0].length > 0) {
+            res.status(400).send("Schedule not available");
+        }
+        else {
             await db.promise().query(`UPDATE appointment SET user_id = '${user_id}', date = '${date}', time = '${time}', contact_number = '${contact_number}' WHERE appointment_id = '${app_id}' `)
             res.status(200).send("Updated Successfully!")
+        }
+            
         
 
     }
@@ -93,6 +98,7 @@ router.put('/edit/:apointment_id', async(req,res) => {
 
     
 })
+
 
 
 

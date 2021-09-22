@@ -85,15 +85,20 @@ router.delete('/delete/:appointment_id', async(req,res) => {
 
 router.put('/edit/:apointment_id', async(req,res) => {
 
-    const { user_id, date, time, contact_number} = req.body;
+    const { user_id } = req.body;
     const app_id = req.params.apointment_id
+
+    if(user_id.length <= 0) {
+        res.status(400).send({msg:"Empty Field"});
+    }
 
     try {
 
         // await db.promise().query(`DELETE * FROM appointment WHERE time = '${time}' && date = '${date}' `)
 
+            const phoneNumber = await db.promise().query(`SELECT phoneNumber FROM users WHERE id = '${user_id}' `)
         
-            await db.promise().query(`UPDATE appointment SET user_id = '${user_id}', contact_number = '${contact_number}' WHERE appointment_id = '${app_id}' `)
+            await db.promise().query(`UPDATE appointment SET user_id = '${user_id}', contact_number = '${phoneNumber[0][0].phoneNumber}' WHERE appointment_id = '${app_id}' `)
             res.status(200).send("Updated Successfully!")
         
             
@@ -101,7 +106,7 @@ router.put('/edit/:apointment_id', async(req,res) => {
 
     }
     catch(err) {
-        res.send(err);
+        res.status(400).send({msg:"Invalid User ID"});
     }
 
     

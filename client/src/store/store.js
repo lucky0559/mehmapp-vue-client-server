@@ -17,6 +17,8 @@ export const store = new Vuex.Store({
         all_forms: [],
         multiple_print: [],
         print_range: [],
+        add_error: '',
+        edit_empty: ''
     },
     getters: {
         appointment_id: state => {

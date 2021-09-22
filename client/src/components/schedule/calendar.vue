@@ -147,9 +147,9 @@
     variant="danger"
     dismissible
     >
-    Empty Field/s
+    {{this.$store.state.edit_empty}}
     </b-alert>
-    <b-alert 
+    <!-- <b-alert 
         v-model="invalid"
         class="position-fixed fixed-top m-0 rounded-0"
         style="z-index: 2000;"
@@ -157,7 +157,7 @@
         dismissible
     >
     Invalid Contact Number
-    </b-alert>
+    </b-alert> -->
     <b-alert 
         v-model="existing"
         class="position-fixed fixed-top m-0 rounded-0"
@@ -235,6 +235,7 @@ import axios from '../../api/api'
                     this.$store.state.form.user_id = ''
                     this.$store.state.form.set_date = ''
                     this.$store.state.form.selected_time = ''
+                    this.$store.state.edit_empty = 'Empty Field'
                     this.empty = true
                     return console.log('empty field')
                 }
@@ -290,7 +291,6 @@ import axios from '../../api/api'
                 try {
                     await axios.put(`/schedule/edit/${this.$store.state.form.appointment_id}`, {
                     user_id: this.$store.state.form.user_id,
-                    contact_number: this.$store.state.form.contact_number,
                     })
 
                     
@@ -299,9 +299,6 @@ import axios from '../../api/api'
                     console.log("Edited" + this.$store.state.form.appointment_id)
                     this.$store.state.form.appointment_id = ''
                     this.$store.state.form.user_id = ''
-                    this.$store.state.form.set_date = ''
-                    this.$store.state.form.selected_time = ''
-                    this.$store.state.form.status = ''
                     this.editted = true
                 }
                 catch(err) {
@@ -309,7 +306,8 @@ import axios from '../../api/api'
                     
                     
                     if(err.response && err.response.data) {
-                        return this.existing = true
+                        this.$store.state.edit_empty = err.response.data.msg
+                        return this.empty = true
                     }
                 }
                    

@@ -2,7 +2,7 @@
     <b-container>
         <b-row>
             <b-col xl="5" lg="4" md="*">
-                <b-calendar  v-model="selected_date"  locale="en" class="mb-2">
+                <b-calendar v-model="selected_date"  locale="en" class="mb-2" :date-info-fn="dateClass" selected-variant="success">
 
                 </b-calendar>
 
@@ -57,17 +57,7 @@
                                 
                             ></b-form-input>
                         </b-form-group>
-                        
-                        <b-form-group id="number" class="mb-3">
-                            <label for="number">Contact Number</label>
-                            <b-form-input
-                                type="number"
-                                required
-                                id="number"
-                                v-model="contact_number"
-                                :state="contact_checker"
-                            ></b-form-input>
-                        </b-form-group>
+                    
                         
                     </b-form>
                 </b-modal>
@@ -115,16 +105,6 @@
                 <b-form-group id="group_time" label="Time" v-slot="{ ariaDescribedby }">
                     <b-form-radio class="mb-2" v-model="time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
                     <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
-                </b-form-group>
-                <b-form-group id="number" class="mb-3">
-                    <b-form-input
-                        type="number"
-                        required
-                        id="number"
-                        placeholder="Phone Number"
-                        v-model="contact_number"
-                        :state="contact_checker"
-                    ></b-form-input>
                 </b-form-group>
                 
             </b-form>
@@ -185,7 +165,7 @@
         variant="warning"
         dismissible
     >
-    Existing Schedule
+    {{this.$store.state.add_error}}
     </b-alert>
     <b-alert 
         v-model="added"
@@ -241,23 +221,22 @@ import axios from '../../api/api'
             existing: false,
             added: false,
             editted: false,
-            deleted: false
+            deleted: false,
+            invalid_userid: false
         }),
         methods: {
+            dateClass(ymd, date) {
+                const day = date.getDate()
+                return day >= 10 && day <= 20 ? 'table-info' : ''
+            },
             confirm() {
 
-                if(!this.$store.state.form.user_id || !this.$store.state.form.set_date || !this.$store.state.form.selected_time || !this.$store.state.form.contact_number) {
+                if(!this.$store.state.form.user_id || !this.$store.state.form.set_date || !this.$store.state.form.selected_time) {
                     this.$store.state.form.user_id = ''
                     this.$store.state.form.set_date = ''
                     this.$store.state.form.selected_time = ''
-                    this.$store.state.form.contact_number = ''
                     this.empty = true
                     return console.log('empty field')
-                }
-
-                if(this.$store.state.form.contact_number.length < 11 || !this.$store.state.form.contact_number.includes('09')) {
-                    this.invalid = true
-                    return console.log('Please provide valid contact number')
                 }
                 
 
@@ -268,31 +247,30 @@ import axios from '../../api/api'
                 .then(async value => {
                     if(value) {
                         try {
-                            const response = await axios.post('/schedule/add', {
+                            await axios.post('/schedule/add', {
                                 user_id: this.$store.state.form.user_id,
                                 date: this.$store.state.form.set_date,
-                                time: this.$store.state.form.selected_time,
-                                contact_number: this.$store.state.form.contact_number
+                                time: this.$store.state.form.selected_time
                             })
                             this.added = true
                             this.$store.state.form.appointment_id = ''
                             this.$store.state.form.user_id = ''
                             this.$store.state.form.set_date = ''
                             this.$store.state.form.selected_time = ''
-                            this.$store.state.form.contact_number = ''
                             this.selectSched();
-                            console.log(response)
+                            // console.log(response.data.contact_number)
                         }
                         catch(error) {
                             if(error.response) {
+                                this.$store.state.add_error = error.response.data.msg
                                 this.existing = true
-                                return console.log(error.response.data)
+                                // return console.log(error.response.data.msg)
                             }
                         }
                         
                     }
                     else {
-                        console.log("Cancelled!")
+                        // console.log("Cancelled!")
                     }
                 })
                 .catch(err => {
@@ -323,7 +301,6 @@ import axios from '../../api/api'
                     this.$store.state.form.user_id = ''
                     this.$store.state.form.set_date = ''
                     this.$store.state.form.selected_time = ''
-                    this.$store.state.form.contact_number = ''
                     this.$store.state.form.status = ''
                     this.editted = true
                 }
@@ -348,7 +325,7 @@ import axios from '../../api/api'
                             await axios.delete(`/schedule/delete/${data.appointment_id}`)
                             this.selectSched();
                             this.deleted = true
-                            console.log("Deleted" + data.appointment_id)
+                            // console.log("Deleted" + data.appointment_id)
                         }
                         catch(error) {
                             console.log(error)
@@ -366,7 +343,6 @@ import axios from '../../api/api'
                 this.$store.state.form.user_id = data.user_id
                 this.$store.state.form.set_date = data.date
                 this.$store.state.form.selected_time = data.time
-                this.$store.state.form.contact_number = data.contact_number
                 this.$store.state.form.status = data.status
             },
             async setStatus() {
@@ -406,9 +382,6 @@ import axios from '../../api/api'
             date_checker() {
                 return !this.$store.state.form.set_date.length > 0 ? false : true
             },
-            contact_checker() {
-                return this.$store.state.form.contact_number.length < 11 || this.$store.state.form.contact_number.length > 11 || !this.$store.state.form.contact_number.includes('09') ? false : true
-            },
             status_checker() {
                 return this.$store.state.form.status.length <= 0  ? false : true
             },
@@ -434,14 +407,6 @@ import axios from '../../api/api'
                 },
                 set(value) {
                     this.$store.dispatch('updateTime', value)
-                }
-            },
-            contact_number: {
-                get() {
-                    return this.$store.getters.contact_number
-                },
-                set(value) {
-                    this.$store.dispatch('updateContact', value)
                 }
             },
             status: {

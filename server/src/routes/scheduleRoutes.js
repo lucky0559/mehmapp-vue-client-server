@@ -55,7 +55,7 @@ router.get('/getDate/:date', async(req,res) => {
     const date = req.params.date
     
     try{
-        const selected = await db.promise().query(`SELECT * FROM appointment WHERE date = '${date}' ORDER BY CASE WHEN time = '9:00AM - 12:00PM' THEN 0 WHEN time = '1:00PM - 4:00PM' THEN 1 END `)
+        const selected = await db.promise().query(`SELECT * FROM appointment WHERE date = '${date}' ORDER BY CASE WHEN time = '8:00AM - 9:00AM' THEN 0 WHEN time = '9:00AM - 10:00PM' THEN 1 WHEN time = '10:00AM - 11:00AM' THEN 2 WHEN time = '11:00AM - 12:00PM' THEN 3 WHEN time = '1:00PM - 2:00PM' THEN 4 WHEN time = '2:00PM - 3:00PM' THEN 5 WHEN time = '3:00PM - 4:00PM' THEN 6 WHEN time = '4:00PM - 5:00PM' THEN 7 END `)
 
         // console.log(selected[0])
         res.status(200).send(selected[0]);

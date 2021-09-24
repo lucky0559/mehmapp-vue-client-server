@@ -67,6 +67,14 @@ router.get('/getUser', async(req, res) => {
 
 })
 
+// router.put('/changePassword', async(req, res) => {
+//     const {new_password, password_token} = req.body;
+
+   
+
+//     await db.promise().query(` SELE `)
+// })
+
 
 
 module.exports = router;

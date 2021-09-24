@@ -2,7 +2,7 @@
     <b-container>
         <b-row>
             <b-col xl="5" lg="4" md="*">
-                <b-calendar v-model="selected_date"  locale="en" class="mb-2" :date-info-fn="dateClass" selected-variant="success">
+                <b-calendar v-model="selected_date"  locale="en" class="mb-2" :date-info-fn="dateClass" selected-variant="warning">
 
                 </b-calendar>
 
@@ -103,8 +103,14 @@
                     <b-form-datepicker v-model="date" :state="date_checker"></b-form-datepicker>
                 </b-form-group>
                 <b-form-group id="group_time" label="Time" v-slot="{ ariaDescribedby }">
-                    <b-form-radio class="mb-2" v-model="time" :aria-describedby="ariaDescribedby" value="9:00AM - 12:00PM">9:00AM - 12:00PM</b-form-radio>
-                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="1:00PM - 4:00PM">1:00PM - 4:00PM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="8:00AM - 9:00AM">8:00AM - 9:00AM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="9:00AM - 10:00AM">9:00AM - 10:00AM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="10:00AM - 11:00AM">10:00AM - 11:00AM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="11:00AM - 12:00PM">11:00AM - 12:00PM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="1:00PM - 2:00PM">1:00PM - 2:00PM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="2:00PM - 3:00PM">2:00PM - 3:00PM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="3:00PM - 4:00PM">3:00PM - 4:00PM</b-form-radio>
+                    <b-form-radio class="mb-4" v-model="time" :aria-describedby="ariaDescribedby" value="4:00PM - 5:00PM">4:00PM - 5:00PM</b-form-radio>
                 </b-form-group>
                 
             </b-form>

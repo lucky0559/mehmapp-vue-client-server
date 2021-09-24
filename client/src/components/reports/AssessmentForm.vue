@@ -1,13 +1,26 @@
 <template>
-    <b-container>
+    <b-container class="pb-3">
         <div>
-            <b-col>
+            
+            <b-col cols="2">
                 <app-date-picker
                     v-model="range"
                     range
                     valueType="format"
                 > </app-date-picker>
+
+                <div class="mt-3 mb-3 d-grid justify-content-end">
+                    <label>User ID</label>
+                    <b-form-input
+                        v-model="filter"
+                        placeholder="Search User ID"
+                    >
+                    </b-form-input>
+                </div>
+                
+
             </b-col>
+            
             <b-col>
                 <b-button 
                     variant="primary" 
@@ -18,9 +31,9 @@
         </div>
         
         <b-table
-            :items="this.$store.state.all_forms"
+            :items="filteredReports"
             :fields="fields"
-            class="text-center"
+            class="text-center mt-3"
         >
             <!-- <template #cell(buttons)="row" v-if="forms"> 
                     <b-button class="m-2" variant="outline-primary" size="sm" @click="setter(row.item)">
@@ -66,6 +79,7 @@
                 start: '',
                 end: '',
                 allRange: [],
+                filter: '',
             }
         },
         async beforeCreate() {
@@ -139,6 +153,18 @@
         },
         components: { 
             appDatePicker: DatePicker 
+        },
+        computed: {
+            filteredReports() {
+                let filt_report = this.$store.state.all_forms
+
+                if(this.filter != '' && this.filter) {
+                    filt_report = filt_report.filter((report) => {
+                        return report.userId.includes(this.filter)
+                    })
+                }
+                return filt_report;
+            }
         }
     }
 </script>

@@ -8,15 +8,6 @@
                     range
                     valueType="format"
                 > </app-date-picker>
-
-                <div class="mt-3 mb-3 d-grid justify-content-end">
-                    <label>User ID</label>
-                    <b-form-input
-                        v-model="filter"
-                        placeholder="Search User ID"
-                    >
-                    </b-form-input>
-                </div>
                 
 
             </b-col>
@@ -28,6 +19,17 @@
                     @click="ranger"
                 >Print</b-button>
             </b-col>
+
+            <div class="mt-3 mb-3 w-25">
+                    <label>User ID</label>
+                    <b-form-input
+                        v-model="filter"
+                        placeholder="Search User ID"
+                    >
+                    </b-form-input>
+            </div>
+
+
         </div>
         
         <b-table
